@@ -8,7 +8,7 @@ import json
 
 
 class Client(object):
-    """ Class representing an AWS SNS client that supports mobile push notifications.
+    """Class representing an AWS SNS client that supports mobile push notifications.
 
     Design Pattern:
 
@@ -22,13 +22,13 @@ class Client(object):
     def __init__(self):
         """
         Constructor method.
-        """    
+        """
         self.__dict__ = self.__shared_state
         self.connection = self.connect()
 
         # retrieve AWS credentials from settings.
-        self.ios_arn = getattr(settings, 'IOS_PLATFORM_APPLICATION_ARN')
-        self.android_arn = getattr(settings, 'ANDROID_PLATFORM_APPLICATION_ARN')
+        self.ios_arn = getattr(settings, "IOS_PLATFORM_APPLICATION_ARN")
+        self.android_arn = getattr(settings, "ANDROID_PLATFORM_APPLICATION_ARN")
 
     @staticmethod
     def connect():
@@ -38,17 +38,18 @@ class Client(object):
         """
         # start an AWS session.
         session = boto3.Session()
-        if getattr(settings, 'AWS_SNS_REGION_NAME', None) and getattr(settings, 'AWS_ACCESS_KEY_ID', None):
+        if getattr(settings, "AWS_SNS_REGION_NAME", None) and getattr(
+            settings, "AWS_ACCESS_KEY_ID", None
+        ):
             return session.client(
                 "sns",
-                region_name=getattr(settings, 'AWS_SNS_REGION_NAME'),
-                aws_access_key_id=getattr(settings, 'AWS_ACCESS_KEY_ID'),
-                aws_secret_access_key=getattr(settings, 'AWS_SECRET_ACCESS_KEY'),
+                region_name=getattr(settings, "AWS_SNS_REGION_NAME"),
+                aws_access_key_id=getattr(settings, "AWS_ACCESS_KEY_ID"),
+                aws_secret_access_key=getattr(settings, "AWS_SECRET_ACCESS_KEY"),
             )
         else:
             return session.client(
-                "sns",
-                region_name=getattr(settings, 'AWS_SNS_REGION_NAME')
+                "sns", region_name=getattr(settings, "AWS_SNS_REGION_NAME")
             )
 
     def retrieve_platform_endpoint_attributs(self, arn):
@@ -57,15 +58,11 @@ class Client(object):
         :param arn: ARN(Amazon resource name)
         :return: attributes of the endpoint
         """
-        response = self.connection.get_endpoint_attributes(
-            EndpointArn=arn
-        )
-        return response['Attributes']
+        response = self.connection.get_endpoint_attributes(EndpointArn=arn)
+        return response["Attributes"]
 
     def delete_platform_endpoint(self, arn):
-        self.connection.delete_endpoint(
-            EndpointArn=arn
-        )
+        self.connection.delete_endpoint(EndpointArn=arn)
 
     def create_ios_platform_endpoint(self, token):
         """
@@ -103,29 +100,61 @@ class Client(object):
         :return: response from SNS
         """
         message = {
-            "GCM": "{ \"notification\": { \"title\": \"%s\", \"text\": \"%s\", \"body\": \"%s\", \"sound\": \"default\" }, \"data\": { \"id\": \"%s\", \"type\": \"%s\", \"serializer\": \"%s\" } }" % (title, text, text, id, notification_type, json.dumps(data).replace("'", "").replace('"', "'"))}
+            "GCM": '{ "notification": { "title": "%s", "text": "%s", "body": "%s", "sound": "default" }, "data": { "id": "%s", "type": "%s", "serializer": "%s" } }'
+            % (
+                title,
+                text,
+                text,
+                id,
+                notification_type,
+                json.dumps(data).replace("'", "").replace('"', "'"),
+            )
+        }
         response = self.connection.publish(
             TargetArn=arn,
             Message=json.dumps(message),
-            MessageStructure='json',
+            MessageStructure="json",
         )
         return message, response
 
-    def publish_to_ios(self, arn, title, text, notification_type, data, id):
+    def publish_to_ios(self, arn, title, text, notification_type, data, id, badge=None):
         """
         Method that sends a mobile push notification to an IOS device.
         :param arn: ARN(Amazon resource name)
         :param title: message title
         :param text: message body
+        :param badge: badge number
         :param notification_type: type of notification
         :param data: data to be used for deep-linking
         :param id: notification ID
         :return: response from SNS
         """
-        message = {"APNS": "{ \"aps\": { \"alert\": { \"title\": \"%s\", \"body\": \"%s\" }, \"sound\": \"default\" }, \"id\": \"%s\",  \"type\": \"%s\", \"serializer\": \"%s\" }" % (title, text, id, notification_type, json.dumps(data).replace("'", "").replace('"', "'"))}
+        if badge is not None:
+            message = {
+                "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                % (
+                    title,
+                    text,
+                    badge,
+                    id,
+                    notification_type,
+                    json.dumps(data).replace("'", "").replace('"', "'"),
+                )
+            }
+        else:
+            message = {
+                "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                % (
+                    title,
+                    text,
+                    id,
+                    notification_type,
+                    json.dumps(data).replace("'", "").replace('"', "'"),
+                )
+            }
         response = self.connection.publish(
             TargetArn=arn,
             Message=json.dumps(message),
-            MessageStructure='json',
+            MessageStructure="json",
         )
         return message, response
