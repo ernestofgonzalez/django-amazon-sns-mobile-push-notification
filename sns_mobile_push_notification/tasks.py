@@ -25,7 +25,9 @@ def refresh_device(device):
     return device.refresh()
 
 
-def send_sns_mobile_push_notification_to_device(device, notification_type, text, data, title):
+def send_sns_mobile_push_notification_to_device(
+    device, notification_type, text, data, title, badge=None
+):
     """
     Method that sends out a mobile push notification to a specific self.
     :param device: device to send the notification to.
@@ -33,11 +35,13 @@ def send_sns_mobile_push_notification_to_device(device, notification_type, text,
     :param text: text to be included in the push notification
     :param data: data to be included in the push notification
     :param title: title to be included in the push notification
+    :param badge: badge number to be included in the push notification
     :return: response from SNS
     """
     return device.send(
         notification_type=notification_type,
         text=text,
         data=data,
-        title=title
+        title=title,
+        badge=badge,
     )

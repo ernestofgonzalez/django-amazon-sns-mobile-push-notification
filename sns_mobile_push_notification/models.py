@@ -11,8 +11,8 @@ class Device(models.Model):
     IOS_OS = 0
     ANDROID_OS = 1
     OS_CHOICES = (
-        (IOS_OS, 'IOS'),
-        (ANDROID_OS, 'Android'),
+        (IOS_OS, "IOS"),
+        (ANDROID_OS, "Android"),
     )
 
     # Fields
@@ -28,11 +28,11 @@ class Device(models.Model):
         """
         :return: string representation of this class.
         """
-        return '%s device' % self.os_name
+        return "%s device" % self.os_name
 
     # Metadata
     class Meta:
-        ordering = ['-id']
+        ordering = ["-id"]
 
     # Properties
     @property
@@ -65,8 +65,8 @@ class Device(models.Model):
             response = client.create_android_platform_endpoint(self.token)
         elif self.is_ios:
             response = client.create_ios_platform_endpoint(self.token)
-        self.arn = response['EndpointArn']
-        self.save(update_fields=['arn'])
+        self.arn = response["EndpointArn"]
+        self.save(update_fields=["arn"])
         return response
 
     def refresh(self):
@@ -80,21 +80,23 @@ class Device(models.Model):
         client = Client()
         try:
             attributes = client.retrieve_platform_endpoint_attributs(self.arn)
-            endpoint_enabled = (attributes['Enabled'] == True) or (attributes['Enabled'].lower() == "true")
-            tokens_matched = attributes['Token'] == self.token
+            endpoint_enabled = (attributes["Enabled"] == True) or (
+                attributes["Enabled"].lower() == "true"
+            )
+            tokens_matched = attributes["Token"] == self.token
             if not (endpoint_enabled and tokens_matched):
                 client.delete_platform_endpoint(self.arn)
                 self.register()
                 attributes = client.retrieve_platform_endpoint_attributs(self.arn)
             return attributes
         except Exception as e:
-            if 'Endpoint does not exist' in str(e):
+            if "Endpoint does not exist" in str(e):
                 self.register()
                 attributes = client.retrieve_platform_endpoint_attributs(self.arn)
                 return attributes
             else:
                 self.active = False
-                self.save(update_fields=['active'])
+                self.save(update_fields=["active"])
 
     def deregister(self):
         """
@@ -104,15 +106,16 @@ class Device(models.Model):
         client = Client()
         client.delete_platform_endpoint(self.arn)
         self.active = False
-        self.save(update_fields=['active'])
+        self.save(update_fields=["active"])
 
-    def send(self, notification_type, text, data, title):
+    def send(self, notification_type, text, data, title, badge=None):
         """
         Method that sends out a mobile push notification to a specific self.
         :param notification_type: type of notification to be sent
         :param text: text to be included in the push notification
         :param data: data to be included in the push notification
         :param title: title to be included in the push notification
+        :param badge: badge number to be included in the push notification
         :return: response from SNS
         """
         log = Log(
@@ -137,6 +140,7 @@ class Device(models.Model):
                 arn=self.arn,
                 text=text,
                 title=title,
+                badge=badge,
                 notification_type=notification_type,
                 data=data,
                 id=log.id,
@@ -157,7 +161,13 @@ class Log(models.Model):
     # Fields
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    device = models.ForeignKey('Device', on_delete=models.CASCADE, related_name='notification_logs', null=True, blank=True)
+    device = models.ForeignKey(
+        "Device",
+        on_delete=models.CASCADE,
+        related_name="notification_logs",
+        null=True,
+        blank=True,
+    )
     notification_type = models.CharField(max_length=255, null=True, blank=True)
     arn = models.CharField(max_length=255, null=True, blank=True)
     message = models.TextField(null=True, blank=True)
@@ -168,4 +178,7 @@ class Log(models.Model):
         """
         :return: string representation of this class.
         """
-        return '"%s" notification log for - "%s"' % (self.notification_type, self.device)
+        return '"%s" notification log for - "%s"' % (
+            self.notification_type,
+            self.device,
+        )
