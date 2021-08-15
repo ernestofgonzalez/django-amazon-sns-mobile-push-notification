@@ -20,7 +20,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 setup(
     name="django-amazon-sns-mobile-push-notification",
     version="0.1",
-    packages=["django_amazon_sns_mobile_push_notification"],
+    packages=["amazon_sns_mobile_push_notification"],
     include_package_data=True,
     license="MIT License",
     description="Send mobile push notification to IOS and android devices using Amazon SNS.",

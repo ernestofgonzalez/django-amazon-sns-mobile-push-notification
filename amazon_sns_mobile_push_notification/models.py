@@ -1,5 +1,5 @@
 from django.db import models
-from sns_mobile_push_notification.client import Client
+from amazon_sns_mobile_push_notification.client import Client
 
 
 class Device(models.Model):
