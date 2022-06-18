@@ -1,0 +1,5 @@
+coverage==6.4.1
+coverage-badge==1.1.0
+mypy==0.961
+pytest-cov==3.0.0
+pytest-xdist==2.5.0
