@@ -23,7 +23,7 @@ class TestNotificationTasks(TestCase):
         Device.objects.all().delete()
         Log.objects.all().delete()
 
-    @patch("amazon_sns_mobile_push_notification.models.Client")
+    @patch("django_amazon_sns_mobile_push_notification.models.Client")
     def test_register(self, mock_Client):
         Log.objects.all().delete()
         token = "token"
@@ -36,7 +36,7 @@ class TestNotificationTasks(TestCase):
         self.assertEquals(response["EndpointArn"], mock_response["EndpointArn"])
         self.assertEquals(device.arn, mock_response["EndpointArn"])
 
-    @patch("amazon_sns_mobile_push_notification.models.Client")
+    @patch("django_amazon_sns_mobile_push_notification.models.Client")
     def test_refresh_when_enabled(self, mock_Client):
         Log.objects.all().delete()
         token = "token"
@@ -48,7 +48,7 @@ class TestNotificationTasks(TestCase):
         self.assertEquals(response, mock_response)
         self.assertEquals(device.token, mock_response["Token"])
 
-    @patch("amazon_sns_mobile_push_notification.models.Client")
+    @patch("django_amazon_sns_mobile_push_notification.models.Client")
     def test_refresh_when_disabled(self, mock_Client):
         Log.objects.all().delete()
         token = "token"
@@ -64,7 +64,7 @@ class TestNotificationTasks(TestCase):
         self.assertEquals(response, mock_response_1)
         self.assertEquals(device.arn, mock_response_2["EndpointArn"])
 
-    @patch("amazon_sns_mobile_push_notification.models.Client")
+    @patch("django_amazon_sns_mobile_push_notification.models.Client")
     def test_deregister(self, mock_Client):
         Log.objects.all().delete()
         token = "token"
@@ -73,7 +73,7 @@ class TestNotificationTasks(TestCase):
         deregister_device(device)
         self.assertEquals(True, True)
 
-    @patch("amazon_sns_mobile_push_notification.models.Client")
+    @patch("django_amazon_sns_mobile_push_notification.models.Client")
     def test_publish_to_android(self, mock_Client):
         Log.objects.all().delete()
         token = "token"
@@ -111,7 +111,7 @@ class TestNotificationTasks(TestCase):
         self.assertEquals(log.message, "message")
         self.assertEquals(log.response, json.dumps(mock_response[1]).replace('"', "'"))
 
-    @patch("amazon_sns_mobile_push_notification.models.Client")
+    @patch("django_amazon_sns_mobile_push_notification.models.Client")
     def test_publish_to_ios(self, mock_Client):
         Log.objects.all().delete()
         token = "token"
