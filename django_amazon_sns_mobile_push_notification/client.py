@@ -2,9 +2,10 @@
 AWS SNS Client
 """
 
-from django.conf import settings
-import boto3
 import json
+
+import boto3
+from django.conf import settings
 
 
 class Client(object):
