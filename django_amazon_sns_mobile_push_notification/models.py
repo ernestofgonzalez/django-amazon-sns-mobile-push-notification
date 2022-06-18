@@ -1,5 +1,6 @@
 from django.db import models
-from amazon_sns_mobile_push_notification.client import Client
+
+from django_amazon_sns_mobile_push_notification.client import Client
 
 
 class Device(models.Model):
@@ -80,7 +81,7 @@ class Device(models.Model):
         client = Client()
         try:
             attributes = client.retrieve_platform_endpoint_attributs(self.arn)
-            endpoint_enabled = (attributes["Enabled"] == True) or (
+            endpoint_enabled = (attributes["Enabled"] is True) or (
                 attributes["Enabled"].lower() == "true"
             )
             tokens_matched = attributes["Token"] == self.token

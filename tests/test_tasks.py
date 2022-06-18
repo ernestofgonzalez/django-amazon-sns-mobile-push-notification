@@ -1,8 +1,15 @@
-from django.test import TestCase
-from unittest.mock import patch
 import json
-from .models import Device, Log
-from .tasks import *
+from unittest.mock import patch
+
+from django.test import TestCase
+
+from django_amazon_sns_mobile_push_notification.models import Device, Log
+from django_amazon_sns_mobile_push_notification.tasks import (
+    deregister_device,
+    refresh_device,
+    register_device,
+    send_sns_mobile_push_notification_to_device,
+)
 
 
 class TestNotificationTasks(TestCase):
@@ -63,7 +70,7 @@ class TestNotificationTasks(TestCase):
         token = "token"
         device = Device.objects.create(token=token, os=Device.ANDROID_OS, arn="arn")
         mock_Client().delete_platform_endpoint.return_value = None
-        response = deregister_device(device)
+        deregister_device(device)
         self.assertEquals(True, True)
 
     @patch("amazon_sns_mobile_push_notification.models.Client")
