@@ -1,21 +1,21 @@
-"""
-Used to configure the settings and start the apps registry process.
-This allows to run commands such as `makemigrations` for the standalone app.
-"""
-
+#!/usr/bin/env python
+"""Command-line utility for administrative tasks."""
 import os
 
 import django
 from django.conf import settings
 
-BASE_DIR = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__), "django_amazon_sns_mobile_push_notification"
+
+def main():
+    """Run administrative tasks"""
+    from commands import execute_from_command_line
+
+    BASE_DIR = os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__), "django_amazon_sns_mobile_push_notification"
+        )
     )
-)
 
-
-def setup_django():
     settings.configure(
         BASE_DIR=BASE_DIR,
         DEBUG=True,
@@ -29,4 +29,11 @@ def setup_django():
         TIME_ZONE="UTC",
         USE_TZ=True,
     )
+
     django.setup()
+
+    execute_from_command_line()
+
+
+if __name__ == "__main__":
+    main()
