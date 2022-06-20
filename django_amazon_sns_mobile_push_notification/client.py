@@ -53,7 +53,7 @@ class Client(object):
                 "sns", region_name=getattr(settings, "AWS_SNS_REGION_NAME")
             )
 
-    def retrieve_platform_endpoint_attributs(self, arn):
+    def retrieve_platform_endpoint_attributes(self, arn):
         """
         Method that retrieves a platform endpoint for an IOS device.
         :param arn: ARN(Amazon resource name)
@@ -130,7 +130,39 @@ class Client(object):
         :param id: notification ID
         :return: response from SNS
         """
-        if badge is not None:
+        if badge is None and text is None:
+            message = {
+                "APNS": '{ "aps": { "alert": { "title": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                % (
+                    title,
+                    id,
+                    notification_type,
+                    json.dumps(data).replace("'", "").replace('"', "'"),
+                )
+            }
+        elif badge is not None and text is None:
+            message = {
+                "APNS": '{ "aps": { "alert": { "title": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                % (
+                    title,
+                    badge,
+                    id,
+                    notification_type,
+                    json.dumps(data).replace("'", "").replace('"', "'"),
+                )
+            }
+        elif badge is None and text is not None:
+            message = {
+                "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                % (
+                    title,
+                    text,
+                    id,
+                    notification_type,
+                    json.dumps(data).replace("'", "").replace('"', "'"),
+                )
+            }
+        else:
             message = {
                 "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
                 % (
@@ -142,17 +174,7 @@ class Client(object):
                     json.dumps(data).replace("'", "").replace('"', "'"),
                 )
             }
-        else:
-            message = {
-                "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
-                % (
-                    title,
-                    text,
-                    id,
-                    notification_type,
-                    json.dumps(data).replace("'", "").replace('"', "'"),
-                )
-            }
+
         response = self.connection.publish(
             TargetArn=arn,
             Message=json.dumps(message),

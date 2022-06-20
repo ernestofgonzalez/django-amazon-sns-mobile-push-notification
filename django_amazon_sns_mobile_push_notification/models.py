@@ -80,7 +80,7 @@ class Device(models.Model):
         """
         client = Client()
         try:
-            attributes = client.retrieve_platform_endpoint_attributs(self.arn)
+            attributes = client.retrieve_platform_endpoint_attributes(self.arn)
             endpoint_enabled = (attributes["Enabled"] is True) or (
                 attributes["Enabled"].lower() == "true"
             )
@@ -88,12 +88,12 @@ class Device(models.Model):
             if not (endpoint_enabled and tokens_matched):
                 client.delete_platform_endpoint(self.arn)
                 self.register()
-                attributes = client.retrieve_platform_endpoint_attributs(self.arn)
+                attributes = client.retrieve_platform_endpoint_attributes(self.arn)
             return attributes
         except Exception as e:
             if "Endpoint does not exist" in str(e):
                 self.register()
-                attributes = client.retrieve_platform_endpoint_attributs(self.arn)
+                attributes = client.retrieve_platform_endpoint_attributes(self.arn)
                 return attributes
             else:
                 self.active = False

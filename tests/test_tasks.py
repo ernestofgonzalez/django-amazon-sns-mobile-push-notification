@@ -42,7 +42,7 @@ class TestNotificationTasks(TestCase):
         token = "token"
         device = Device.objects.create(token=token, os=Device.ANDROID_OS, arn="arn")
         mock_response = {"Enabled": "true", "Token": token}
-        mock_Client().retrieve_platform_endpoint_attributs.return_value = mock_response
+        mock_Client().retrieve_platform_endpoint_attributes.return_value = mock_response
         mock_Client().delete_platform_endpoint.return_value = ""
         response = refresh_device(device)
         self.assertEquals(response, mock_response)
@@ -54,7 +54,7 @@ class TestNotificationTasks(TestCase):
         token = "token"
         device = Device.objects.create(token=token, os=Device.ANDROID_OS, arn="arn")
         mock_response_1 = {"Enabled": "false", "Token": token}
-        mock_Client().retrieve_platform_endpoint_attributs.return_value = (
+        mock_Client().retrieve_platform_endpoint_attributes.return_value = (
             mock_response_1
         )
         mock_response_2 = {"EndpointArn": "arn"}
