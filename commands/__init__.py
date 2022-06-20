@@ -9,9 +9,9 @@ from django.core.management import call_command
 @click.pass_context
 def execute_from_command_line(ctx):
     if ctx.invoked_subcommand is None:
-        click.echo("I was invoked without subcommand")
+       pass
     else:
-        click.echo(f"I am about to invoke {ctx.invoked_subcommand}")
+        pass
 
 
 @execute_from_command_line.command()
