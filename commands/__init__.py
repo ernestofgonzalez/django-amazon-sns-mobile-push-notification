@@ -9,7 +9,7 @@ from django.core.management import call_command
 @click.pass_context
 def execute_from_command_line(ctx):
     if ctx.invoked_subcommand is None:
-       pass
+        pass
     else:
         pass
 
