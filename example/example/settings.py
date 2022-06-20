@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_amazon_sns_mobile_push_notification",
 ]
 
 MIDDLEWARE = [
