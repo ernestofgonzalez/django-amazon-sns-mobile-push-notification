@@ -1,0 +1,2 @@
+# Install django-amazon-sns-mobile-push-notification in editable mode.
+-e ../
