@@ -53,7 +53,7 @@ class Client(object):
                 "sns", region_name=getattr(settings, "AWS_SNS_REGION_NAME")
             )
 
-    def retrieve_platform_endpoint_attributs(self, arn):
+    def retrieve_platform_endpoint_attributes(self, arn):
         """
         Method that retrieves a platform endpoint for an IOS device.
         :param arn: ARN(Amazon resource name)
