@@ -33,7 +33,7 @@ install: requirements.txt
 # Run tests
 test:
 	@echo "${LIGHT_CYAN}Running tests...${NO_COLOR}"
-	python3 manage.py test --parallel
+	python3 manage.py test
 
 # Run tests with pytest
 pytest: 
