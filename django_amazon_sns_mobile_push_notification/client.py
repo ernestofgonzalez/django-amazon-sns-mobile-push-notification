@@ -132,7 +132,7 @@ class Client(object):
         """
         if badge is None and text is None:
             message = {
-                "APNS": '{ "aps": { "alert": { "title": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                "APNS": '{ "aps": { "mutable-content": 1, "alert": { "title": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
                 % (
                     title,
                     id,
@@ -142,7 +142,7 @@ class Client(object):
             }
         elif badge is not None and text is None:
             message = {
-                "APNS": '{ "aps": { "alert": { "title": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                "APNS": '{ "aps": { "mutable-content": 1, "alert": { "title": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
                 % (
                     title,
                     badge,
@@ -153,7 +153,7 @@ class Client(object):
             }
         elif badge is None and text is not None:
             message = {
-                "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                "APNS": '{ "aps": { "mutable-content": 1, "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "id": "%s",  "type": "%s", "serializer": "%s" }'
                 % (
                     title,
                     text,
@@ -164,7 +164,7 @@ class Client(object):
             }
         else:
             message = {
-                "APNS": '{ "aps": { "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
+                "APNS": '{ "aps": { "mutable-content": 1, "alert": { "title": "%s", "body": "%s" }, "sound": "default" }, "badge": %d, "id": "%s",  "type": "%s", "serializer": "%s" }'
                 % (
                     title,
                     text,
